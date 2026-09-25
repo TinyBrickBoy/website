@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070b18"/>
+      <stop offset="100%" stop-color="#0d1326"/>
+    </linearGradient>
+    <radialGradient id="orb1" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.65"/>
+      <stop offset="70%" stop-color="#3b82f6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.6"/>
+      <stop offset="70%" stop-color="#a855f7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb3" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#ec4899" stop-opacity="0.45"/>
+      <stop offset="70%" stop-color="#ec4899" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="grad-text" x1="0" y1="0" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="logo-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M 64 0 L 0 0 0 64" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="200" cy="180" r="380" fill="url(#orb1)"/>
+  <circle cx="1000" cy="500" r="420" fill="url(#orb2)"/>
+  <circle cx="700" cy="100" r="320" fill="url(#orb3)"/>
+
+  <!-- Logo mark -->
+  <g transform="translate(80,80)">
+    <rect width="64" height="64" rx="14" fill="url(#logo-grad)"/>
+    <text x="32" y="44" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="800" fill="white" text-anchor="middle">tb</text>
+    <text x="84" y="44" font-family="Inter,Arial,sans-serif" font-size="26" font-weight="800" fill="rgba(255,255,255,0.85)">tinybrickboy</text>
+  </g>
+
+  <!-- Eyebrow pill -->
+  <g transform="translate(80,250)">
+    <rect width="220" height="40" rx="20" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+    <circle cx="22" cy="20" r="5" fill="#22c55e"/>
+    <text x="40" y="26" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="600" fill="rgba(255,255,255,0.85)">Verfügbar für Projekte</text>
+  </g>
+
+  <!-- Headline -->
+  <text x="80" y="380" font-family="Inter,Arial,sans-serif" font-size="92" font-weight="900" fill="white" letter-spacing="-3">Hey, ich bin</text>
+  <text x="80" y="480" font-family="Inter,Arial,sans-serif" font-size="120" font-weight="900" fill="url(#grad-text)" letter-spacing="-4">Leo.</text>
+
+  <!-- Tagline -->
+  <text x="80" y="550" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="500" fill="rgba(255,255,255,0.65)">Minecraft-Entwicklung &amp; Netzwerksicherheit</text>
+</svg>
