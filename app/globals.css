@@ -1,0 +1,126 @@
+/* ============================================
+   Design Tokens — Liquid Glass
+   ============================================ */
+:root {
+    --primary: #2f74ff;
+    --primary-2: #6366f1;
+    --accent: #a855f7;
+    --accent-2: #ec4899;
+
+    --bg: #eef2f9;
+    --bg-2: #e3e9f5;
+    --text: #0b1020;
+    --text-2: #51607a;
+    --text-3: #8a97ad;
+
+    /* Glass materials */
+    --glass: rgba(255, 255, 255, 0.55);
+    --glass-strong: rgba(255, 255, 255, 0.72);
+    --glass-soft: rgba(255, 255, 255, 0.38);
+    --glass-border: rgba(255, 255, 255, 0.7);
+    --glass-border-2: rgba(15, 23, 42, 0.08);
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    --glass-blur: blur(28px) saturate(180%);
+
+    --shadow-sm: 0 2px 8px -2px rgba(15, 23, 42, 0.10);
+    --shadow: 0 12px 32px -12px rgba(15, 23, 42, 0.18);
+    --shadow-lg: 0 30px 70px -24px rgba(15, 23, 42, 0.28);
+    --shadow-glow: 0 24px 60px -24px rgba(47, 116, 255, 0.45);
+
+    --radius-sm: 0.625rem;
+    --radius: 1rem;
+    --radius-lg: 1.5rem;
+    --radius-xl: 2rem;
+    --radius-pill: 9999px;
+
+    --grad-primary: linear-gradient(135deg, #2f74ff 0%, #6366f1 50%, #a855f7 100%);
+    --grad-warm: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #a855f7 100%);
+}
+.dark {
+    --bg: #060912;
+    --bg-2: #0a0f1f;
+    --text: #f2f5fb;
+    --text-2: #9aa6bd;
+    --text-3: #5d6b86;
+
+    --glass: rgba(255, 255, 255, 0.055);
+    --glass-strong: rgba(22, 29, 51, 0.62);
+    --glass-soft: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-border-2: rgba(255, 255, 255, 0.08);
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+
+    --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.5);
+    --shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 40px 80px -24px rgba(0, 0, 0, 0.7);
+    --shadow-glow: 0 30px 80px -24px rgba(99, 102, 241, 0.5);
+}
+
+/* ============================================
+   Reset & Base
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
+body {
+    font-family: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+a { text-decoration: none; color: inherit; }
+img, video { display: block; max-width: 100%; }
+button { font: inherit; }
+
+::selection { background: rgba(47, 116, 255, 0.28); color: var(--text); }
+
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+/* Ambient background — soft color field behind glass */
+.ambient {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+    background: var(--bg);
+}
+.ambient .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+}
+
+/* Inline-SVG-Icons übernehmen Größe und Farbe vom Text */
+.icon { width: 1em; height: 1em; flex-shrink: 0; display: inline-block; vertical-align: -0.125em; }
+
+/* Icon button (Theme-Toggle, Menü) */
+.icon-btn {
+    display: grid; place-items: center;
+    width: 2.4rem; height: 2.4rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    color: var(--text-2);
+    cursor: pointer;
+    font-size: 0.95rem;
+    box-shadow: var(--glass-highlight);
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.icon-btn:hover { color: var(--text); transform: translateY(-1px); }
+.icon-btn:active { transform: scale(0.94); }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
