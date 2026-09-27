@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import ImprintAddress, { imprintComplete } from "@/components/ImprintAddress";
 import P from "@/components/Placeholder";
+import { getImprint } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   title: "Datenschutz | tinybrickboy",
@@ -7,29 +9,30 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default function Datenschutz() {
+export const revalidate = 300;
+
+export default async function Datenschutz() {
+  const imprint = await getImprint();
+  const email = imprint.email || "hello@tinybrickboy.de";
+
   return (
     <>
       <h1>Datenschutzerklärung</h1>
       <p className="lead">Informationen zur Verarbeitung personenbezogener Daten gemäß Art. 13 DSGVO.</p>
 
-      <div className="notice">
-        <strong>Hinweis:</strong> Felder mit <P>[ECKIGEN KLAMMERN]</P> bitte vor dem Veröffentlichen mit deinen
-        echten Daten ersetzen.
-      </div>
+      {!imprintComplete(imprint) && (
+        <div className="notice">
+          <strong>Hinweis:</strong> Felder mit <P>[ECKIGEN KLAMMERN]</P> bitte vor dem Veröffentlichen mit deinen
+          echten Daten ersetzen.
+        </div>
+      )}
 
       <h2>1. Verantwortlicher</h2>
       <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:</p>
       <p>
-        <P>[VOLLSTÄNDIGER NAME]</P>
+        <ImprintAddress imprint={imprint} />
         <br />
-        <P>[STRASSE UND HAUSNUMMER]</P>
-        <br />
-        <P>[PLZ ORT]</P>
-        <br />
-        Deutschland
-        <br />
-        E-Mail: <a href="mailto:hello@tinybrickboy.de">hello@tinybrickboy.de</a>
+        E-Mail: <a href={`mailto:${email}`}>{email}</a>
       </p>
 
       <h2>2. Allgemeines</h2>
@@ -70,8 +73,10 @@ export default function Datenschutz() {
       <h2>4. Keine externen Ressourcen</h2>
       <p>
         Schriftarten, Icons und Bilder werden <strong>ausschließlich von diesem Server</strong> ausgeliefert. Es
-        werden keine Inhalte von Drittanbietern (z. B. Font-CDNs, Bilddienste oder externe APIs) nachgeladen. Beim
-        Aufruf der Website wird deine IP-Adresse daher an keine weiteren Dienste übertragen.
+        werden keine Inhalte von Drittanbietern (z. B. Font-CDNs, Bilddienste oder externe APIs) nachgeladen. Texte
+        wie Projekte und Impressum lädt der Webserver aus einem selbst betriebenen CMS; dein Browser baut dabei
+        keine Verbindung zu anderen Servern auf. Beim Aufruf der Website wird deine IP-Adresse daher an keine
+        weiteren Dienste übertragen.
       </p>
 
       <h2>5. Lokale Speicherung (localStorage)</h2>
@@ -104,7 +109,7 @@ export default function Datenschutz() {
       </ul>
       <p>
         Zur Ausübung dieser Rechte genügt eine formlose E-Mail an{" "}
-        <a href="mailto:hello@tinybrickboy.de">hello@tinybrickboy.de</a>.
+        <a href={`mailto:${email}`}>{email}</a>.
       </p>
 
       <h2>8. Aktualität dieser Datenschutzerklärung</h2>

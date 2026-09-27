@@ -16,6 +16,7 @@ import Link from "next/link";
 import { DiscordIcon, GithubIcon, InstagramIcon } from "@/components/Icons";
 import HomeEffects from "@/components/HomeEffects";
 import SiteHeader from "@/components/SiteHeader";
+import { getOrganizations, getProjects, mediaUrl } from "@/lib/strapi";
 import "./home.css";
 
 export const metadata: Metadata = {
@@ -94,30 +95,37 @@ const features: { icon: LucideIcon; title: string; text: string }[] = [
   },
 ];
 
-const projects = [
-  {
-    title: "onthepixel.net",
-    text: "Ein Minecraft-Minigames-Server mit verschiedenen Spielmodi und einer aktiven Community.",
-    image: "/img/projects/onthepixel.png",
-    alt: "onthepixel.net Minecraft Server",
-    tags: ["Java", "System Management", "Node.js"],
-    url: "https://onthepixel.net",
-    warm: false,
-  },
-  {
-    title: "fastasfuck",
-    text: "Spezialisierte DDoS-Protection und Reverse-Proxy-Lösung für Minecraft-Server mit Fokus auf Performance und Sicherheit.",
-    image: "/img/projects/fastasfuck.jpg",
-    alt: "fastasfuck DDoS Protection",
-    tags: ["Go", "Reverse Proxy", "Support"],
-    url: "https://fastasfuck.net",
-    warm: true,
-  },
-];
+// Lokale Bilder für Organisationen ohne Bild in Strapi
+const fallbackImages: Record<string, string> = {
+  "onthepixel.net": "/img/projects/onthepixel.png",
+  "fastasfuck.net": "/img/projects/fastasfuck.jpg",
+};
+
+function hostOf(link: string | null) {
+  if (!link) return null;
+  try {
+    return new URL(link).hostname.replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+}
+
+const projectTypes: Record<string, string> = {
+  finished: "Fertig",
+  "in-progress": "In Arbeit",
+  in_progress: "In Arbeit",
+  wip: "In Arbeit",
+  planned: "Geplant",
+  archived: "Archiviert",
+};
 
 const delay = (i: number) => (i > 0 ? ` reveal-d${i}` : "");
 
-export default function Home() {
+export const revalidate = 300;
+
+export default async function Home() {
+  const [organizations, projects] = await Promise.all([getOrganizations(), getProjects()]);
+
   return (
     <div className="home">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -207,38 +215,77 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ORGANIZATIONS */}
+        {organizations.length > 0 && (
+          <section id="organizations" className="section section-projects">
+            <div className="container">
+              <div className="section-header reveal">
+                <span className="eyebrow">Organisationen</span>
+                <h2>Was ich betreibe</h2>
+                <p>Organisationen, die ich aktiv betreibe und weiterentwickle.</p>
+              </div>
+              <div className="project-grid">
+                {organizations.map((o, i) => {
+                  const host = hostOf(o.link);
+                  const image = mediaUrl(o.image) ?? (host ? fallbackImages[host] : undefined);
+                  return (
+                    <article key={o.id} className={`project${i % 2 ? " project--warm" : ""} reveal${delay((i % 2) + 1)}`}>
+                      {image && (
+                        <div className="project-media">
+                          <img src={image} alt={o.image?.alternativeText || o.Name} loading="lazy" decoding="async" />
+                        </div>
+                      )}
+                      <div className="project-body">
+                        <h3>{o.Name}</h3>
+                        <p>{o.description}</p>
+                        {o.link && (
+                          <a href={o.link} className="project-link" target="_blank" rel="noopener noreferrer">
+                            {host ?? "Website besuchen"}
+                            <ExternalLink className="icon arrow" aria-hidden="true" />
+                          </a>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* PROJECTS */}
-        <section id="projects" className="section section-projects">
-          <div className="container">
-            <div className="section-header reveal">
-              <span className="eyebrow">Portfolio</span>
-              <h2>Aktuelle Projekte</h2>
-              <p>Zwei Projekte, die ich aktiv betreibe und weiterentwickle.</p>
+        {projects.length > 0 && (
+          <section id="projects" className="section">
+            <div className="container">
+              <div className="section-header reveal">
+                <span className="eyebrow">Portfolio</span>
+                <h2>Projekte</h2>
+                <p>Tools und Apps, die ich gebaut habe.</p>
+              </div>
+              <div className="project-list">
+                {projects.map((p, i) => {
+                  const image = mediaUrl(p.image);
+                  return (
+                    <article key={p.id} className={`project-card reveal${delay(i % 4)}`} data-spot>
+                      {image && <img className="project-card-img" src={image} alt={p.image?.alternativeText || p.name} loading="lazy" decoding="async" />}
+                      <div className="project-card-head">
+                        <h3>{p.name}</h3>
+                        {p.type && <span className={`status status--${p.type}`}>{projectTypes[p.type] ?? p.type}</span>}
+                      </div>
+                      <p>{p.description}</p>
+                      {p.link && (
+                        <a href={p.link} className="project-link" target="_blank" rel="noopener noreferrer">
+                          Ansehen
+                          <ExternalLink className="icon arrow" aria-hidden="true" />
+                        </a>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
             </div>
-            <div className="project-grid">
-              {projects.map((p, i) => (
-                <article key={p.title} className={`project${p.warm ? " project--warm" : ""} reveal${delay(i + 1)}`}>
-                  <div className="project-media">
-                    <img src={p.image} alt={p.alt} loading="lazy" decoding="async" />
-                  </div>
-                  <div className="project-body">
-                    <h3>{p.title}</h3>
-                    <p>{p.text}</p>
-                    <div className="project-tags">
-                      {p.tags.map((t) => (
-                        <span key={t} className="tag">{t}</span>
-                      ))}
-                    </div>
-                    <a href={p.url} className="project-link" target="_blank" rel="noopener noreferrer">
-                      Website besuchen
-                      <ExternalLink className="icon arrow" aria-hidden="true" />
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* CONTACT */}
         <section id="contact" className="section section-contact">
@@ -327,6 +374,7 @@ export default function Home() {
             <nav className="footer-nav" aria-label="Footer-Navigation">
               <a href="#home">Home</a>
               <a href="#what">Was</a>
+              <a href="#organizations">Organisationen</a>
               <a href="#projects">Projekte</a>
               <a href="#contact">Kontakt</a>
               <Link href="/impressum">Impressum</Link>
