@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import ImprintAddress, { imprintComplete } from "@/components/ImprintAddress";
 import P from "@/components/Placeholder";
+import { getImprint } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   title: "Impressum | tinybrickboy",
@@ -7,42 +9,43 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default function Impressum() {
+export const revalidate = 300;
+
+export default async function Impressum() {
+  const imprint = await getImprint();
+  const email = imprint.email || "hello@tinybrickboy.de";
+
   return (
     <>
       <h1>Impressum</h1>
       <p className="lead">Angaben gemäß § 5 TMG (Telemediengesetz).</p>
 
-      <div className="notice">
-        <strong>Hinweis:</strong> Die mit <P>[ECKIGEN KLAMMERN]</P> markierten Felder müssen durch deine echten
-        Daten ersetzt werden, bevor die Seite öffentlich live geht.
-      </div>
+      {!imprintComplete(imprint) && (
+        <div className="notice">
+          <strong>Hinweis:</strong> Die mit <P>[ECKIGEN KLAMMERN]</P> markierten Felder müssen durch deine echten
+          Daten ersetzt werden, bevor die Seite öffentlich live geht.
+        </div>
+      )}
 
       <h2>Diensteanbieter</h2>
       <p>
-        <P>[VOLLSTÄNDIGER NAME]</P>
-        <br />
-        <P>[STRASSE UND HAUSNUMMER]</P>
-        <br />
-        <P>[PLZ ORT]</P>
-        <br />
-        Deutschland
+        <ImprintAddress imprint={imprint} />
       </p>
 
       <h2>Kontakt</h2>
       <p>
-        E-Mail: <a href="mailto:hello@tinybrickboy.de">hello@tinybrickboy.de</a>
-        <br />
-        Telefon: <P>[OPTIONAL: TELEFONNUMMER]</P>
+        E-Mail: <a href={`mailto:${email}`}>{email}</a>
+        {imprint.phone && (
+          <>
+            <br />
+            Telefon: {imprint.phone}
+          </>
+        )}
       </p>
 
       <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
       <p>
-        <P>[VOLLSTÄNDIGER NAME]</P>
-        <br />
-        <P>[STRASSE UND HAUSNUMMER]</P>
-        <br />
-        <P>[PLZ ORT]</P>
+        <ImprintAddress imprint={imprint} country={false} />
       </p>
 
       <h2>Streitschlichtung</h2>
