@@ -23,5 +23,6 @@ COPY --from=build --chown=app:app /app/.next/static ./.next/static
 COPY --from=build --chown=app:app /app/public ./public
 USER app
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://127.0.0.1:3000/ >/dev/null || exit 1
+# Healthcheck folgt PORT, damit er auch passt, wenn die Plattform (z.B. Coolify) einen anderen Port setzt
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s CMD wget -qO- "http://127.0.0.1:${PORT}/" >/dev/null || exit 1
 CMD ["node", "server.js"]
